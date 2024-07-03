@@ -79,13 +79,31 @@ const updateNote = asyncHandler(async (req, res) => {
 
 
 // getallnotes (anyone)
-const getAllNotes = asyncHandler(async(req , res)=>{
-    const records = await note.find().lean().exec()
-    if(!records){
-        return res.status(400).json({msg : "no records to retrieve"})
+const getAllNotes = asyncHandler(async (req, res) => {
+    try {
+        const records = await note.find().lean().exec();
+
+        if (!records.length) {
+            return res.status(404).json({ msg: "No records found." });
+        }
+
+        const notesWithUser = await Promise.all(
+            records.map(async (record) => {
+                try {
+                    const foundUser = await user.findById(record.user_id).lean().exec();
+                    return { ...record, username: foundUser ? foundUser.username : "Unknown User" };
+                } catch (error) {
+                    return { ...record, username: "Error retrieving user" };
+                }
+            })
+        );
+
+        res.status(200).json(notesWithUser);
+    } catch (error) {
+        res.status(500).json({ msg: "Failed to retrieve notes.", error: error.message });
     }
-    res.status(200).json(records)
-})
+});
+
 
 
 // delete note (only managers and admins)
