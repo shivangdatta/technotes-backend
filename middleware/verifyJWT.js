@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken')
 
+console.log('please github work')
+
 const verifyJWT = (req, res, next) => {
     const authHeader = req.headers.authorization || req.headers.Authorization
 
