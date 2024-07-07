@@ -6,7 +6,7 @@
 -Notes Storage
 -User Storage
 
-Optimization Features
+## Optimization Features
 -Rate Limiter for login ensuring both security and higher performance
 -async/await for not blocking main thread
 -error Handling and logger
